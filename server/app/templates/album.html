@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}九鼎天元相册{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+{% endblock %}
+
+{% block page_content %}
+
+<div id="app">
+    <i-button type="primary" @click="show_upload_photo = true">发照片</i-button>
+    <i-button type="primary" @click="show_new_album = true">新建相册</i-button>
+<Modal
+        v-model="show_upload_photo"
+        title="发照片"
+        @on-ok="upload_photo"
+        @on-cancel="cancel_upload"
+>
+
+</Modal>
+
+
+<Modal
+        v-model="show_new_album"
+        title="新建相册"
+        @on-ok="new_album"
+        @on-cancel="cancel_new"
+> 
+    <i-form :model="form">
+{#        <FormItem label="相册名称", prop="name">#}
+{#            <i-input v-model="form.name"></i-input>#}
+{#        </FormItem>#}
+    </i-form>
+
+</Modal>
+    <div v-for=" i in albums">
+        <a href="#">
+            <img src="/static/album.png" width="100", height="100">
+        </a>
+        <p v-text="i.time"></p>
+        <p v-text="i.name"></p>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+       var App = new Vue({
+            el: '#app',
+            data:{
+                show_upload_photo:false,
+                show_new_album:false,
+                albums:[],
+                form:{
+                    name:''
+                }
+            },
+            methods:{
+                init_data(){
+                    this.$http.get('/api/albums').then(function(res){
+                        this.albums = res.data
+                    })
+                },
+                cancel_upload(){
+                    this.show_upload_photo = false
+                },
+                cancel_new(){
+                    this.show_new_album = false
+                },
+                upload_photo(){
+                    
+                },
+                new_album(){
+                    form = new FormData();
+                    form.append('name',this.form.name);
+                    this.$http.post('/api/new-album',form).then(function(res){
+                        this.show_new_album = false;
+                        this.init_data()
+                    })
+                }
+            }
+        });
+{#        App.init_data()#}
+    </script>
+{% endblock %}
