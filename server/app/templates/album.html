@@ -4,7 +4,12 @@
 
 {% block head %}
 {{ super() }}
-
+<style>
+    .album {
+        margin: 10px 5px 5px 5px;
+        float:left
+    }
+</style>
 {% endblock %}
 
 {% block page_content %}
@@ -15,9 +20,27 @@
 <Modal
         v-model="show_upload_photo"
         title="发照片"
-        @on-ok="upload_photo"
         @on-cancel="cancel_upload"
 >
+    <i-select v-model="upload_album" style="width:200px">
+        <i-option v-for="item in albums" :value="item.name"><span v-text="item.name"></span></i-option>
+    </i-select>
+    <br>
+    <br>
+    <Upload
+        :before-upload="check_album"
+        multiple
+        type="drag"
+        action="/upload">
+        <div style="padding: 20px 0">
+            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+            <p>点击或拖动上传文件</p>
+        </div>
+    </Upload>
+    <div slot="footer">
+            <i-button>取消</i-button>
+        </div>
+
 
 </Modal>
 
@@ -29,15 +52,18 @@
         @on-cancel="cancel_new"
 > 
     <i-form :model="form">
-{#        <FormItem label="相册名称", prop="name">#}
-{#            <i-input v-model="form.name"></i-input>#}
-{#        </FormItem>#}
+        <Form-item label="相册名称" prop="name">
+            <i-input v-model="form.name">
+            </i-input>
+        </Form-item>
     </i-form>
 
 </Modal>
-    <div v-for=" i in albums">
+<br>
+<br>
+    <div v-for=" i in albums" class="album">
         <a href="#">
-            <img src="/static/album.png" width="100", height="100">
+            <img src="/static/album.png" width="200" height="200">
         </a>
         <p v-text="i.time"></p>
         <p v-text="i.name"></p>
@@ -54,9 +80,11 @@
        var App = new Vue({
             el: '#app',
             data:{
+
                 show_upload_photo:false,
                 show_new_album:false,
                 albums:[],
+                upload_album:'',
                 form:{
                     name:''
                 }
@@ -73,6 +101,12 @@
                 cancel_new(){
                     this.show_new_album = false
                 },
+                check_album(){
+                  if (this.upload_album == ""){
+                      this.$Message.warning('请选择相册');
+                      return false
+                  }
+                },
                 upload_photo(){
                     
                 },
@@ -80,12 +114,13 @@
                     form = new FormData();
                     form.append('name',this.form.name);
                     this.$http.post('/api/new-album',form).then(function(res){
+                        this.form.name = ''
                         this.show_new_album = false;
                         this.init_data()
                     })
                 }
             }
         });
-{#        App.init_data()#}
+    App.init_data()
     </script>
 {% endblock %}

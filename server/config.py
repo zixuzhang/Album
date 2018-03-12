@@ -3,6 +3,7 @@ import os
 
 SECRET_KEY = os.environ.get('SECRET_KEY') or '1234abcd!'
 
-MONGODB_HOST = '192.168.102.120'
+ALLOWED_FILE = ['jpg','png','rar','zip']
+MONGODB_HOST = '127.0.0.1'
 MONGODB_PORT = 27017
 MONGODB_DB = 'photo'

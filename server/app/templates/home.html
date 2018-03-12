@@ -12,8 +12,12 @@
 
 
 <div>
+{% for img in imgs  %}
 
-
+<a href="#">
+    <img src="{{ img.img }}" width="300" height="200">
+</a>
+{% endfor %}
 </div>
 
 {% endblock %}
