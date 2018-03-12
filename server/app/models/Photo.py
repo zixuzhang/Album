@@ -12,5 +12,5 @@ class Photo(db.Document):
 
     def to_dict(self):
         d = {}
-        d['img'] = self.img.read()
+        d['id'] = str(self.id)
         return d

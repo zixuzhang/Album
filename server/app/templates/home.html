@@ -5,17 +5,22 @@
 {% block head %}
 
 {{ super() }}
-
+<style>
+        .photo {
+        margin: 10px 10px 10px 10px;
+        float:left
+    }
+</style>
 {% endblock %}
 
 {% block page_content %}
 
 
-<div>
+<div class="photo">
 {% for img in imgs  %}
 
-<a href="#">
-    <img src="{{ img.img }}" width="300" height="200">
+<a href="/img/{{img.id}}">
+    <img src="/img/{{ img.id }}" width="300" height="200">
 </a>
 {% endfor %}
 </div>

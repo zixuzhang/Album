@@ -1,7 +1,7 @@
 #coding=utf-8
 import zipfile
 from . import main
-from flask import render_template, redirect, url_for,request,jsonify
+from flask import render_template, redirect, url_for,request,jsonify,Response
 from ..models.Photo import Photo
 from ..models.Album import Album
 # from config import ALLOWED_FILE
@@ -16,14 +16,18 @@ def index():
     #页码
     page = int(request.args.get('page',0))
     count = int(request.args.get('count',1))
-    print page
-    print count
     # imgs = Photo.objects[(page-1)*count:page*count]
     imgs = Photo.objects
     imgs = [i.to_dict() for i in imgs]
     return render_template('home.html',imgs=imgs)
 
-
+@main.route('/img/<id>')
+def img(id):
+    #图片
+    photo = Photo.objects.get(id=id)
+    img = photo.img.read()
+    res = Response(img,mimetype="image/jpeg")
+    return res
 
 @main.route('/album')
 def album():
