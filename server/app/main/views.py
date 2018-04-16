@@ -41,7 +41,7 @@ def upload():
     file = request.files['file']
     filename = file.filename
     if file:
-        if filetype(filename) in ['zip','rar']:
+        if filetype(filename) in ['zip','rar','ZIP','RAR']:
             #压缩文件
             z = zipfile.ZipFile(file,'r')
             for i in z.namelist():
@@ -51,10 +51,13 @@ def upload():
                     img = z.read(i)
                     Photo(img_name=img_name,img=img).save()
             return jsonify({'msg': '压缩包上传成功', 'type': 'success'})
-        elif filetype(filename) in ['png','jpg']:
+        elif filetype(filename) in ['png','jpg','jepg','PNG','JPG','JEPG']:
             #图片文件
             Photo(album_name=album_name,img=file).save()
             return jsonify({'msg': '图片上传成功', 'type': 'success'})
+        else:
+            return jsonify({'msg': '上传失败', 'type': 'error'})
+        
 
 
 @main.route('/api/new-album',methods=['GET','POST'])
